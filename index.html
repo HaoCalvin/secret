@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>✨ 星链 · 隐秘密钥 · 每日暗号</title>
+    <title>✨ 星链 · 每日暗号 · 修复版</title>
     <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
@@ -582,7 +582,7 @@
 <div class="app">
     <div class="header">
         <div class="title-section">
-            <h1><i class="fas fa-star" style="color: #ffd966;"></i> 星链·隐秘主钥</h1>
+            <h1><i class="fas fa-star" style="color: #ffd966;"></i> 星链·每日暗号</h1>
             <div class="badge"><i class="fas fa-shield-alt"></i> 主密码不显示</div>
         </div>
         <div class="key-tag" id="globalKeyDisplay">
@@ -613,14 +613,14 @@
                 <div class="bubble-grid" id="bubbleStyleGrid"></div>
             </div>
 
-            <!-- 主密码输入区域 (不显示主密码) -->
+            <!-- 主密码输入区域 -->
             <div class="master-key-section">
                 <div class="section-title">
                     <i class="fas fa-key"></i> 主密码验证
                 </div>
                 <div class="master-key-area">
                     <div style="color:#ffaa33; font-size:0.8rem; margin-bottom:10px; text-align:center;">
-                        <i class="fas fa-lock"></i> 主密码不显示在页面上
+                        <i class="fas fa-lock"></i> 请输入50位主密码
                     </div>
                     <div class="daily-key-box" id="dailyKeyBox" style="display: none;">
                         <div style="font-size:0.8rem; color:#aac2ff;">今日暗号 (20位)</div>
@@ -680,17 +680,17 @@
 <script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.2/dist/peerjs.min.js"></script>
 <script>
 (function() {
-    // ---------- 50位固定主密码 (仅在此处定义，不显示在页面上) ----------
-    // 请将此密码通过安全方式告知信任的人
+    // ---------- 50位固定主密码 ----------
     const MASTER_PASSWORD = "X8k9#mP2$rT5vLq7@wN4jY6zU3cF1hA8eB9dC4fG6hJ2kL5nM7pQ9rS2tU5vW8x";
     
     // 状态变量
     let isUnlocked = false;
-    let currentDailyKey = '';      // 今日20位暗号
+    let currentDailyKey = '';
     let myName = "我";
     let myPeerId = null;
     let connections = [];
     let myBubbleStyle = 1;
+    let peer = null;
 
     // DOM 元素
     const peerIdDisplay = document.getElementById('peerIdDisplay');
@@ -738,21 +738,20 @@
         bubbleStyleGrid.appendChild(div);
     }
 
-    // 根据日期生成今日暗号 (基于主密码的确定性哈希)
+    // 根据日期生成今日暗号
     function generateDailyKey() {
-        const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+        const today = new Date().toISOString().split('T')[0];
         const seed = MASTER_PASSWORD + today;
         let hash = 0;
         for (let i = 0; i < seed.length; i++) {
             hash = ((hash << 5) - hash) + seed.charCodeAt(i);
             hash |= 0;
         }
-        // 生成20位暗号：包含大小写字母数字特殊符号
         const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*';
         let key = '';
         let tempHash = Math.abs(hash);
         for (let i = 0; i < 20; i++) {
-            tempHash = (tempHash * 9301 + 49297) % 233280; // 伪随机
+            tempHash = (tempHash * 9301 + 49297) % 233280;
             const index = tempHash % chars.length;
             key += chars[index];
         }
@@ -760,7 +759,7 @@
     }
 
     // 解锁功能
-    unlockBtn.addEventListener('click', () => {
+    unlockBtn.addEventListener('click', function() {
         const inputPwd = masterPasswordInput.value.trim();
         if (inputPwd === MASTER_PASSWORD) {
             isUnlocked = true;
@@ -776,12 +775,24 @@
             disconnectBtn.disabled = false;
             textInput.disabled = false;
             sendBtn.disabled = false;
-            document.querySelectorAll('.emoji').forEach(el => el.style.pointerEvents = 'auto');
             attachBtn.style.pointerEvents = 'auto';
+            clearHistoryBtn.style.opacity = '1';
             connectionStatus.innerHTML = '<i class="fas fa-satellite-dish"></i> 等待连接';
             
             // 初始化Peer
-            initializePeer();
+            if (peer) {
+                peer.destroy();
+            }
+            peer = new Peer();
+            
+            peer.on('open', (id) => {
+                myPeerId = id;
+                peerIdDisplay.innerHTML = `<i class="fas fa-id-card"></i> ID: ${id}`;
+            });
+
+            peer.on('connection', (incomingConn) => {
+                setupConnection(incomingConn, incomingConn.peer);
+            });
             
             alert('解锁成功！今日暗号已显示');
         } else {
@@ -789,24 +800,7 @@
         }
     });
 
-    // 初始化Peer
-    function initializePeer() {
-        if (peer) peer.destroy();
-        peer = new Peer();
-        
-        peer.on('open', (id) => {
-            myPeerId = id;
-            peerIdDisplay.innerHTML = `<i class="fas fa-id-card"></i> ID: ${id}`;
-        });
-
-        peer.on('connection', (incomingConn) => {
-            setupConnection(incomingConn, incomingConn.peer);
-        });
-    }
-
-    let peer = null;
-
-    // 加密解密 (使用今日暗号)
+    // 加密解密
     function encrypt(plain) {
         if (!isUnlocked || !currentDailyKey) return plain;
         try {
@@ -874,7 +868,7 @@
         });
     }
 
-    function addMessageToUI(content, senderName, senderStyle = 1, isSelf = false) {
+    function addMessageToUI(content, senderName, senderStyle = 1) {
         const msgDiv = document.createElement('div');
         msgDiv.classList.add('message', senderName === myName ? 'self' : 'other');
         
@@ -1021,7 +1015,7 @@
         if (connections.length > 0) {
             broadcastToAll(encrypt(raw));
         }
-        addMessageToUI(raw, myName, myBubbleStyle, true);
+        addMessageToUI(raw, myName, myBubbleStyle);
         textInput.value = '';
         textInput.style.height = 'auto';
     }
@@ -1057,6 +1051,7 @@
     });
 
     clearHistoryBtn.addEventListener('click', () => {
+        if (!isUnlocked) return;
         messageArea.innerHTML = '';
         addMessageToUI('💫 对话已清空', '系统', 1);
     });
