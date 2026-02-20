@@ -3,693 +3,293 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>✨ 星链 </title>
-    <!-- Font Awesome 6 -->
+    <title>🔐 极简加密 · 点对点聊天</title>
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
         }
-
         body {
+            background: #0a0f1a;
             min-height: 100vh;
-            background: radial-gradient(ellipse at 30% 40%, #1a2942, #0b101f);
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 16px;
-            position: relative;
-            overflow-x: hidden;
+            padding: 12px;
         }
-
-        body::before {
-            content: '';
-            position: absolute;
-            width: 150%;
-            height: 150%;
-            top: -25%;
-            left: -25%;
-            background: radial-gradient(circle at 30% 50%, rgba(100, 150, 255, 0.15) 0%, transparent 40%),
-                        radial-gradient(circle at 80% 70%, rgba(200, 130, 255, 0.12) 0%, transparent 45%),
-                        repeating-linear-gradient(45deg, rgba(255,255,255,0.02) 0px, rgba(255,255,255,0.02) 2px, transparent 2px, transparent 8px);
-            pointer-events: none;
-            z-index: 0;
-            animation: slowDrift 40s infinite alternate ease-in-out;
-        }
-
-        @keyframes slowDrift {
-            0% { transform: rotate(0deg) scale(1); opacity: 0.5; }
-            100% { transform: rotate(3deg) scale(1.05); opacity: 0.8; }
-        }
-
         .app {
-            position: relative;
-            z-index: 10;
-            max-width: 1600px;
+            max-width: 1000px;
             width: 100%;
-            height: 95vh;
-            max-height: 1100px;
-            background: rgba(18, 28, 46, 0.7);
-            backdrop-filter: blur(16px) saturate(180%);
-            -webkit-backdrop-filter: blur(16px) saturate(180%);
-            border-radius: 48px;
-            border: 1px solid rgba(110, 155, 255, 0.3);
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.05) inset, 0 0 40px rgba(70, 130, 255, 0.2);
+            height: 90vh;
+            background: #151f2b;
+            border-radius: 32px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+            border: 1px solid #2d4055;
             overflow: hidden;
             display: flex;
             flex-direction: column;
         }
-
         .header {
-            padding: 18px 28px;
-            background: rgba(28, 40, 62, 0.7);
-            backdrop-filter: blur(8px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 16px 20px;
+            background: #1e2c3c;
+            border-bottom: 1px solid #354b66;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 16px;
         }
-
-        .title-section {
-            display: flex;
-            align-items: center;
-            gap: 16px;
+        .header h2 {
+            color: #ffd966;
+            font-size: 1.4rem;
         }
-
-        .title-section h1 {
-            font-size: 1.9rem;
-            font-weight: 600;
-            background: linear-gradient(135deg, #fff8e7, #c6deff, #b3a4ff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            letter-spacing: 1px;
-            text-shadow: 0 0 10px rgba(180, 200, 255, 0.5);
-        }
-
-        .badge {
-            background: rgba(200, 225, 255, 0.15);
-            border: 1px solid rgba(255, 215, 100, 0.5);
-            border-radius: 60px;
-            padding: 6px 16px;
-            font-size: 0.8rem;
-            color: #ffecbb;
-            box-shadow: 0 0 12px #ffd96655;
-        }
-
-        .key-tag {
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px solid #5f8aff;
-            border-radius: 60px;
-            padding: 8px 22px;
-            font-family: 'Monaco', 'Fira Code', monospace;
-            font-size: 1rem;
-            color: #d0e2ff;
-            letter-spacing: 2px;
-            box-shadow: 0 0 16px #3f7aff66;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
-        .key-tag:hover {
-            background: rgba(60, 100, 200, 0.5);
-            transform: scale(1.02);
-        }
-
-        .main-layout {
-            display: flex;
-            flex: 1;
-            min-height: 0;
-            overflow: hidden;
-        }
-
-        .left-sidebar {
-            width: 300px;
-            background: rgba(12, 22, 38, 0.6);
-            backdrop-filter: blur(12px);
-            border-right: 1px solid rgba(255, 255, 255, 0.1);
-            display: flex;
-            flex-direction: column;
-            padding: 20px 0;
-            box-shadow: 4px 0 30px rgba(0, 0, 0, 0.3);
-            overflow-y: auto;
-        }
-
-        .members-section, .bubble-styles-section, .master-key-section {
-            padding: 0 16px 20px;
-        }
-
-        .section-title {
-            color: #b3ceff;
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 16px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            padding-bottom: 8px;
-        }
-
-        .members-list {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            margin-bottom: 20px;
-        }
-
-        .member-item {
-            background: rgba(30, 45, 75, 0.6);
-            backdrop-filter: blur(4px);
-            border: 1px solid rgba(255, 215, 140, 0.3);
+        .key-badge {
+            background: #2a3f5a;
+            padding: 6px 14px;
             border-radius: 40px;
-            padding: 10px 16px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
-        .member-item:hover {
-            background: rgba(50, 75, 120, 0.7);
-            border-color: #ffbb88;
-            transform: translateX(4px);
-        }
-
-        .member-item.self {
-            background: linear-gradient(145deg, rgba(80, 100, 200, 0.7), rgba(50, 70, 180, 0.7));
-            border-color: #ffd966;
-        }
-
-        .member-status {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background: #4cd964;
-            box-shadow: 0 0 12px #4cd964;
-        }
-
-        .member-name {
-            flex: 1;
-            font-weight: 500;
-            color: white;
-        }
-
-        .bubble-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-            margin-bottom: 20px;
-        }
-
-        .bubble-style-item {
-            background: rgba(20, 30, 50, 0.6);
-            border: 2px solid transparent;
-            border-radius: 16px;
-            padding: 16px 8px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
-            cursor: pointer;
-            transition: 0.2s;
-            color: #ccd9ff;
-        }
-
-        .bubble-style-item:hover {
-            background: rgba(50, 70, 120, 0.6);
-            transform: scale(1.02);
-        }
-
-        .bubble-style-item.active {
-            border-color: #ffaa33;
-            box-shadow: 0 0 20px #ffaa33;
-            background: rgba(80, 100, 180, 0.5);
-        }
-
-        .bubble-preview {
-            width: 100%;
-            padding: 8px;
-            border-radius: 12px;
-            background: rgba(255,255,255,0.1);
-            font-size: 0.8rem;
-            text-align: center;
-            overflow: hidden;
-            white-space: nowrap;
-            text-overflow: ellipsis;
-        }
-
-        .style-name {
-            font-size: 0.7rem;
-            color: #aac2ff;
-        }
-
-        .master-key-area {
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 24px;
-            padding: 16px;
-            margin-top: 10px;
-            border: 1px solid #ffaa3355;
-        }
-
-        .daily-key-box {
-            background: linear-gradient(145deg, #1e3a5f, #0f2642);
-            border-radius: 30px;
-            padding: 15px;
-            text-align: center;
-            margin: 10px 0;
-            border: 1px solid #5f8aff;
-        }
-
-        .daily-key {
             font-family: monospace;
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: #ffdb8e;
-            letter-spacing: 3px;
-            text-shadow: 0 0 10px #ffaa33;
-            word-break: break-all;
+            font-size: 0.8rem;
+            color: #aac8ff;
+            border: 1px solid #5a7bb5;
         }
-
-        .unlock-btn {
-            background: linear-gradient(145deg, #ffaa33, #ff8800);
-            border: none;
-            color: #1a1a2e;
-            font-weight: bold;
-            padding: 12px 24px;
-            border-radius: 40px;
-            width: 100%;
-            cursor: pointer;
-            transition: 0.2s;
-            margin-top: 10px;
-        }
-
-        .unlock-btn:hover {
-            transform: scale(1.02);
-            box-shadow: 0 0 20px #ffaa33;
-        }
-
-        .unlock-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .master-input {
-            width: 100%;
-            background: rgba(0,0,0,0.4);
-            border: 1px solid #5f8aff;
-            border-radius: 40px;
-            padding: 10px 16px;
-            color: white;
-            margin: 8px 0;
-            outline: none;
-        }
-
-        .chat-area {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            min-width: 0;
-            background: rgba(8, 16, 28, 0.3);
-        }
-
         .connect-bar {
-            padding: 14px 22px;
-            background: rgba(16, 28, 48, 0.6);
-            backdrop-filter: blur(8px);
+            padding: 12px 20px;
+            background: #172635;
             display: flex;
             flex-wrap: wrap;
-            gap: 10px;
-            align-items: center;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            gap: 8px;
+            border-bottom: 1px solid #2e4565;
         }
-
-        .peer-id-box {
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid #5f8aff;
+        .peer-id {
+            background: #1e314a;
+            border: 1px solid #4a70b0;
             border-radius: 40px;
-            padding: 8px 20px;
+            padding: 8px 16px;
             font-family: monospace;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             flex: 1;
-            min-width: 180px;
+            min-width: 160px;
             color: #bbd9ff;
         }
-
         button {
-            background: rgba(40, 70, 140, 0.8);
-            backdrop-filter: blur(4px);
-            border: 1px solid #9cb9ff;
+            background: #2d5090;
+            border: none;
             color: white;
-            padding: 8px 20px;
+            padding: 8px 18px;
             border-radius: 40px;
             font-weight: 500;
             cursor: pointer;
-            transition: 0.2s;
+            border: 1px solid #5f8ae0;
+            transition: 0.15s;
             display: inline-flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
         }
-
-        button:hover:not(:disabled) {
-            background: #3f6ed8;
-            border-color: #ffdb9f;
-            transform: scale(1.03);
+        button:hover {
+            background: #3e67b5;
+            transform: scale(1.02);
         }
-
         button:disabled {
             opacity: 0.5;
             cursor: not-allowed;
         }
-
         .remote-input {
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid #6d8eff;
+            background: #1e314a;
+            border: 1px solid #4a70b0;
             border-radius: 40px;
-            padding: 8px 20px;
+            padding: 8px 16px;
             color: white;
             outline: none;
             flex: 1;
-            min-width: 160px;
+            min-width: 140px;
         }
-
         .toolbar {
-            padding: 12px 22px;
-            background: rgba(26, 38, 62, 0.6);
-            backdrop-filter: blur(10px);
+            padding: 10px 20px;
+            background: #172938;
             display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-            align-items: center;
-            border-bottom: 1px solid rgba(255, 215, 140, 0.2);
+            gap: 10px;
+            border-bottom: 1px solid #2f4a70;
         }
-
         .emoji-panel {
             display: flex;
             gap: 8px;
-            background: rgba(0, 0, 0, 0.3);
-            padding: 6px 16px;
-            border-radius: 60px;
-            border: 1px solid #ffd48a55;
+            background: #253c60;
+            padding: 5px 15px;
+            border-radius: 40px;
         }
-
         .emoji {
-            font-size: 1.7rem;
+            font-size: 1.5rem;
             cursor: pointer;
-            transition: 0.1s;
         }
-
         .emoji:hover {
-            transform: scale(1.3);
-            filter: drop-shadow(0 0 8px gold);
+            transform: scale(1.2);
         }
-
         .attach-btn {
-            background: rgba(40, 60, 120, 0.6);
-            border: 1px solid #b5aaff;
-            border-radius: 60px;
-            padding: 6px 20px;
+            background: #253c60;
+            border-radius: 40px;
+            padding: 5px 20px;
             cursor: pointer;
             display: flex;
             align-items: center;
             gap: 8px;
         }
-
-        #fileInput { display: none; }
-
+        #fileInput {
+            display: none;
+        }
         .messages {
             flex: 1;
-            padding: 24px;
+            padding: 20px;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 18px;
-            background: rgba(0, 0, 0, 0.2);
+            gap: 15px;
+            background: #0f1a28;
         }
-
         .message {
             display: flex;
             flex-direction: column;
             max-width: 80%;
-            animation: popIn 0.3s ease;
         }
-
         .message.self {
             align-self: flex-end;
         }
-
         .message.other {
             align-self: flex-start;
         }
-
-        .bubble-style-1 { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; color: white; }
-        .bubble-style-2 { background: #ff9a9e; border: 3px solid #fad0c4; color: #2c3e50; }
-        .bubble-style-3 { background: #a8edea; border: 2px dashed #fed6e3; color: #1a2a4f; }
-        .bubble-style-4 { background: #f6d5f7; border: 4px double #fbe9d7; color: #2d4059; }
-        .bubble-style-5 { background: #d9afd9; border: 3px dotted #97d9e1; color: #2b2b52; }
-        .bubble-style-6 { background: #ffecd2; border: 5px ridge #fcb69f; color: #4a4a4a; }
-        .bubble-style-7 { background: #a1c4fd; border: 3px groove #c2e9fb; color: #1e2b3a; }
-        .bubble-style-8 { background: #fbc2eb; border: 4px inset #a6c1ee; color: #311d3f; }
-        .bubble-style-9 { background: #84fab0; border: 3px outset #8fd3f4; color: #1b4d3e; }
-        .bubble-style-10 { background: #fccb90; border: 6px solid #ff9a9e; border-radius: 30px 0 30px 0; color: #442b18; }
-        .bubble-style-11 { background: #a6c0fe; border: 2px solid #f68084; border-radius: 0 30px 0 30px; color: #1e2746; }
-        .bubble-style-12 { background: #f093fb; border: 4px double #f5576c; border-radius: 40px 0 40px 0; color: #311b47; }
-        .bubble-style-13 { background: #4facfe; border: 3px dashed #00f2fe; box-shadow: 0 10px 20px rgba(0,0,0,0.3); color: white; }
-        .bubble-style-14 { background: #43e97b; border: 2px dotted #38f9d7; box-shadow: 0 0 20px #43e97b; color: #1a3b2e; }
-        .bubble-style-15 { background: #fa709a; border: 4px groove #fee140; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); color: white; }
-        .bubble-style-16 { background: #30cfd0; border: 5px ridge #330867; font-style: italic; color: #f0f0f0; }
-        .bubble-style-17 { background: #a8c0ff; border: 3px inset #3f2b96; font-weight: bold; color: #1f1f2e; }
-        .bubble-style-18 { background: #fbc2eb; border: 4px outset #a18cd1; font-size: 1.1rem; color: #2a1e3c; }
-        .bubble-style-19 { background: #ff9a9e; border: 2px solid #fad0c4; border-radius: 50px 0 50px 0; color: #5c3b3b; }
-        .bubble-style-20 { background: #a1c4fd; border: 3px double #c2e9fb; border-radius: 0 50px 0 50px; color: #1e3161; }
-        .bubble-style-21 { background: #667eea; border: 4px ridge #764ba2; border-radius: 30px 30px 0 30px; color: white; }
-        .bubble-style-22 { background: #ff758c; border: 3px groove #ff7eb3; border-radius: 30px 30px 30px 0; color: white; }
-        .bubble-style-23 { background: #43e97b; border: 2px dashed #38f9d7; border-radius: 0 30px 30px 30px; color: #1e3a2a; }
-        .bubble-style-24 { background: #fa709a; border: 3px dotted #fee140; border-radius: 30px 0 30px 30px; color: white; }
-        .bubble-style-25 { background: #4facfe; border: 4px double #00f2fe; border-radius: 0 30px 30px 0; color: white; }
-        .bubble-style-26 { background: #f6d5f7; border: 5px ridge #fbe9d7; border-radius: 30px 0 0 30px; color: #3a2a4a; }
-        .bubble-style-27 { background: #d9afd9; border: 3px inset #97d9e1; border-radius: 40px 0 0 40px; color: #2c2c54; }
-        .bubble-style-28 { background: #ffecd2; border: 4px outset #fcb69f; border-radius: 0 40px 40px 0; color: #4a3b2a; }
-        .bubble-style-29 { background: #a8edea; border: 6px solid #fed6e3; border-radius: 20px 50px 20px 50px; color: #1a3b4e; }
-        .bubble-style-30 { background: linear-gradient(45deg, #ee9ca7, #ffdde1); border: 2px dotted #ff9a9e; border-radius: 50px 20px 50px 20px; color: #4a2b2b; }
-
         .bubble {
-            padding: 12px 20px;
-            border-radius: 28px;
+            padding: 10px 16px;
+            border-radius: 24px;
+            background: #1e345a;
+            border: 1px solid #3b66b0;
             word-break: break-word;
-            line-height: 1.5;
-            font-size: 1rem;
-            transition: 0.2s;
         }
-
-        .at-link {
-            color: #ffdb8e;
-            background: rgba(255, 215, 0, 0.2);
-            padding: 2px 6px;
-            border-radius: 30px;
-            font-weight: 600;
+        .self .bubble {
+            background: #2b4d8a;
+            border-bottom-right-radius: 6px;
         }
-
-        .mention-highlight {
-            border-left: 3px solid #ffbb33;
-            padding-left: 12px;
+        .other .bubble {
+            border-bottom-left-radius: 6px;
         }
-
         .media-content {
             max-width: 100%;
-            border-radius: 20px;
-            max-height: 240px;
+            border-radius: 12px;
+            max-height: 200px;
         }
-
         .signature {
             font-size: 0.7rem;
-            margin-top: 6px;
+            margin-top: 4px;
             padding: 0 10px;
             display: flex;
             gap: 16px;
-            color: #acc3f0;
+            color: #9bb3e0;
         }
-
         .self .signature {
             justify-content: flex-end;
         }
-
         .input-area {
             display: flex;
-            padding: 18px 22px 22px;
-            background: rgba(18, 28, 48, 0.6);
-            backdrop-filter: blur(12px);
-            gap: 12px;
-            align-items: flex-end;
-            border-top: 1px solid rgba(255, 215, 140, 0.2);
+            padding: 16px 20px 20px;
+            background: #151f2b;
+            gap: 10px;
+            border-top: 1px solid #2b4370;
         }
-
         .text-field {
             flex: 1;
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid #7f9eff;
-            border-radius: 40px;
-            padding: 8px 22px;
+            background: #1f3660;
+            border-radius: 30px;
+            padding: 8px 18px;
+            border: 1px solid #4570c0;
         }
-
         #textInput {
             width: 100%;
             background: transparent;
             border: none;
             color: white;
-            font-size: 1rem;
             resize: none;
             outline: none;
-            max-height: 120px;
+            font-size: 1rem;
+            max-height: 100px;
         }
-
         .send-btn {
-            background: linear-gradient(145deg, #4f7ae0, #3055b0);
-            width: 56px;
-            height: 56px;
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
+            background: #3a6cd0;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.6rem;
-            border: 1px solid #ffdb9f;
+            font-size: 1.3rem;
+            border: 1px solid #7fa3ff;
         }
-
         .status-bar {
-            padding: 8px 24px;
-            background: rgba(0, 0, 0, 0.4);
-            backdrop-filter: blur(4px);
+            padding: 8px 20px;
+            background: #0e1a2a;
+            color: #90b0f0;
             font-size: 0.8rem;
-            color: #c1d2ff;
             display: flex;
             justify-content: space-between;
-            border-top: 1px solid #ffffff15;
-        }
-
-        @keyframes popIn {
-            0% { opacity: 0; transform: translateY(12px) scale(0.9); }
-            100% { opacity: 1; transform: translateY(0) scale(1); }
+            border-top: 1px solid #2f4a7a;
         }
     </style>
 </head>
 <body>
 <div class="app">
     <div class="header">
-        <div class="title-section">
-            <h1><i class="fas fa-star" style="color: #ffd966;"></i> 星链·真正跨设备</h1>
-            <div class="badge"><i class="fas fa-shield-alt"></i> 点对点直连</div>
-        </div>
-        <div class="key-tag" id="globalKeyDisplay">
-            <i class="fas fa-lock"></i> 请输入主密码解锁
-        </div>
+        <h2><i class="fas fa-lock" style="color: #ffd966;"></i> 极简加密 · 直连</h2>
+        <div class="key-badge" id="keyDisplay">密钥: 50位固定密码</div>
     </div>
 
-    <div class="main-layout">
-        <!-- 左侧边栏 -->
-        <div class="left-sidebar">
-            <!-- 成员区域 -->
-            <div class="members-section">
-                <div class="section-title">
-                    <i class="fas fa-users"></i> 在线成员 (<span id="memberCount">1</span>)
-                </div>
-                <div class="members-list" id="membersList"></div>
-                <div style="display: flex; gap: 8px; margin-top: 10px;">
-                    <input type="text" id="nicknameInput" placeholder="修改昵称" style="flex:1; background:rgba(0,0,0,0.4); border:1px solid #6d8eff; border-radius:40px; padding:8px 12px; color:white;">
-                    <button id="changeNicknameBtn"><i class="fas fa-check"></i></button>
-                </div>
-            </div>
+    <div class="connect-bar">
+        <div class="peer-id" id="peerIdDisplay">初始化中...</div>
+        <button id="copyIdBtn"><i class="far fa-copy"></i> 复制ID</button>
+        <input type="text" class="remote-input" id="remoteIdInput" placeholder="粘贴对方ID">
+        <button id="connectBtn"><i class="fas fa-link"></i> 连接</button>
+        <button id="disconnectBtn" style="background:#6b4f8f;"><i class="fas fa-times"></i> 断开</button>
+    </div>
 
-            <!-- 气泡样式 -->
-            <div class="bubble-styles-section">
-                <div class="section-title">
-                    <i class="fas fa-comment-dots"></i> 气泡风格 (30种)
-                </div>
-                <div class="bubble-grid" id="bubbleStyleGrid"></div>
-            </div>
-
-            <!-- 主密码输入区域 -->
-            <div class="master-key-section">
-                <div class="section-title">
-                    <i class="fas fa-key"></i> 主密码验证
-                </div>
-                <div class="master-key-area">
-                    <div style="color:#ffaa33; font-size:0.8rem; margin-bottom:10px; text-align:center;">
-                        <i class="fas fa-lock"></i> 请输入50位主密码
-                    </div>
-                    <div class="daily-key-box" id="dailyKeyBox" style="display: none;">
-                        <div style="font-size:0.8rem; color:#aac2ff;">今日暗号 (20位)</div>
-                        <div class="daily-key" id="dailyKeyDisplay"></div>
-                    </div>
-                    <input type="password" id="masterPasswordInput" class="master-input" placeholder="输入50位主密码">
-                    <button class="unlock-btn" id="unlockBtn"><i class="fas fa-unlock-alt"></i> 解锁今日暗号</button>
-                </div>
-            </div>
+    <div class="toolbar">
+        <div class="emoji-panel">
+            <span class="emoji" data-emoji="😀">😀</span>
+            <span class="emoji" data-emoji="😂">😂</span>
+            <span class="emoji" data-emoji="😍">😍</span>
+            <span class="emoji" data-emoji="👍">👍</span>
+            <span class="emoji" data-emoji="🎉">🎉</span>
+            <span class="emoji" data-emoji="🔥">🔥</span>
         </div>
-
-        <!-- 右侧聊天区 -->
-        <div class="chat-area">
-            <div class="connect-bar">
-                <div class="peer-id-box" id="peerIdDisplay"><i class="fas fa-id-card"></i> 生成ID中...</div>
-                <button id="copyIdBtn" disabled><i class="far fa-copy"></i> 复制ID</button>
-                <input type="text" class="remote-input" id="remoteIdInput" placeholder="粘贴好友ID" disabled>
-                <button id="connectBtn" disabled><i class="fas fa-plus-circle"></i> 连接</button>
-                <button id="disconnectBtn" style="background:#6b4f8f;" disabled><i class="fas fa-sign-out-alt"></i> 断开</button>
-            </div>
-
-            <div class="toolbar">
-                <div class="emoji-panel">
-                    <span class="emoji" data-emoji="😀">😀</span>
-                    <span class="emoji" data-emoji="😂">😂</span>
-                    <span class="emoji" data-emoji="😍">😍</span>
-                    <span class="emoji" data-emoji="👍">👍</span>
-                    <span class="emoji" data-emoji="🎉">🎉</span>
-                    <span class="emoji" data-emoji="🔥">🔥</span>
-                    <span class="emoji" data-emoji="✨">✨</span>
-                    <span class="emoji" data-emoji="💀">💀</span>
-                </div>
-                <div class="attach-btn" id="attachBtn">
-                    <i class="fas fa-paperclip"></i> 图片/视频
-                </div>
-                <input type="file" id="fileInput" accept="image/*,video/*">
-            </div>
-
-            <div class="messages" id="messageArea"></div>
-
-            <div class="input-area">
-                <div class="text-field">
-                    <textarea id="textInput" placeholder="请先解锁今日暗号" rows="1" disabled></textarea>
-                </div>
-                <button class="send-btn" id="sendBtn" disabled><i class="fas fa-paper-plane"></i></button>
-            </div>
-
-            <div class="status-bar">
-                <span id="connectionStatus"><i class="fas fa-lock"></i> 未解锁</span>
-                <span id="clearHistory" style="cursor:pointer; opacity:0.5;"><i class="far fa-trash-alt"></i> 清空</span>
-            </div>
+        <div class="attach-btn" id="attachBtn">
+            <i class="fas fa-paperclip"></i> 图片/视频
         </div>
+        <input type="file" id="fileInput" accept="image/*,video/*">
+    </div>
+
+    <div class="messages" id="messageArea"></div>
+
+    <div class="input-area">
+        <div class="text-field">
+            <textarea id="textInput" placeholder="输入消息..." rows="1"></textarea>
+        </div>
+        <button class="send-btn" id="sendBtn"><i class="fas fa-paper-plane"></i></button>
+    </div>
+
+    <div class="status-bar">
+        <span id="connectionStatus"><i class="fas fa-wifi"></i> 未连接</span>
+        <span id="clearHistory" style="cursor:pointer;"><i class="far fa-trash-alt"></i> 清空</span>
     </div>
 </div>
 
-<!-- PeerJS 使用公共服务器 -->
 <script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.2/dist/peerjs.min.js"></script>
 <script>
 (function() {
-    // ---------- 50位固定主密码 ----------
-    const MASTER_PASSWORD = "X8k9#mP2$rT5vLq7@wN4jY6zU3cF1hA8eB9dC4fG6hJ2kL5nM7pQ9rS2tU5vW8x";
-    
+    // ---------- 50位固定密码（直接用作加解密密钥）----------
+    const SECRET_KEY = "X8k9#mP2$rT5vLq7@wN4jY6zU3cF1hA8eB9dC4fG6hJ2kL5nM7pQ9rS2tU5vW8x";
+    document.getElementById('keyDisplay').innerText = '密钥: 50位固定密码';
+
     // 状态变量
-    let isUnlocked = false;
-    let currentDailyKey = '';
     let myName = "我";
     let myPeerId = null;
-    let connections = []; // 存储所有连接 { conn, peerId, memberName, bubbleStyle }
-    let myBubbleStyle = 1;
+    let connections = []; // 存储所有连接
     let peer = null;
 
     // DOM 元素
@@ -705,197 +305,65 @@
     const clearHistoryBtn = document.getElementById('clearHistory');
     const fileInput = document.getElementById('fileInput');
     const attachBtn = document.getElementById('attachBtn');
-    const membersList = document.getElementById('membersList');
-    const memberCountSpan = document.getElementById('memberCount');
-    const nicknameInput = document.getElementById('nicknameInput');
-    const changeNicknameBtn = document.getElementById('changeNicknameBtn');
-    const bubbleStyleGrid = document.getElementById('bubbleStyleGrid');
-    const masterPasswordInput = document.getElementById('masterPasswordInput');
-    const unlockBtn = document.getElementById('unlockBtn');
-    const dailyKeyBox = document.getElementById('dailyKeyBox');
-    const dailyKeyDisplay = document.getElementById('dailyKeyDisplay');
-    const globalKeyDisplay = document.getElementById('globalKeyDisplay');
 
-    // 生成30种样式预览
-    for (let i = 1; i <= 30; i++) {
-        const div = document.createElement('div');
-        div.className = `bubble-style-item ${i === myBubbleStyle ? 'active' : ''}`;
-        div.setAttribute('data-style', i);
-        div.innerHTML = `
-            <div class="bubble-preview bubble-style-${i}">预览</div>
-            <div class="style-name">风格 ${i}</div>
-        `;
-        div.addEventListener('click', () => {
-            if (!isUnlocked) {
-                alert('请先解锁今日暗号');
-                return;
-            }
-            myBubbleStyle = i;
-            document.querySelectorAll('.bubble-style-item').forEach(el => el.classList.remove('active'));
-            div.classList.add('active');
-            broadcastToAll(encrypt('STYLE:' + myBubbleStyle));
-        });
-        bubbleStyleGrid.appendChild(div);
-    }
-
-    // 根据日期生成今日暗号
-    function generateDailyKey() {
-        const today = new Date().toISOString().split('T')[0];
-        const seed = MASTER_PASSWORD + today;
-        let hash = 0;
-        for (let i = 0; i < seed.length; i++) {
-            hash = ((hash << 5) - hash) + seed.charCodeAt(i);
-            hash |= 0;
-        }
-        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*';
-        let key = '';
-        let tempHash = Math.abs(hash);
-        for (let i = 0; i < 20; i++) {
-            tempHash = (tempHash * 9301 + 49297) % 233280;
-            const index = tempHash % chars.length;
-            key += chars[index];
-        }
-        return key;
-    }
-
-    // 解锁功能
-    unlockBtn.addEventListener('click', function() {
-        const inputPwd = masterPasswordInput.value.trim();
-        if (inputPwd === MASTER_PASSWORD) {
-            isUnlocked = true;
-            currentDailyKey = generateDailyKey();
-            dailyKeyDisplay.innerText = currentDailyKey;
-            dailyKeyBox.style.display = 'block';
-            globalKeyDisplay.innerHTML = `<i class="fas fa-unlock"></i> 今日暗号已激活`;
-            
-            // 启用所有控件
-            copyIdBtn.disabled = false;
-            remoteIdInput.disabled = false;
-            connectBtn.disabled = false;
-            disconnectBtn.disabled = false;
-            textInput.disabled = false;
-            sendBtn.disabled = false;
-            attachBtn.style.pointerEvents = 'auto';
-            clearHistoryBtn.style.opacity = '1';
-            connectionStatus.innerHTML = '<i class="fas fa-satellite-dish"></i> 等待连接';
-            
-            // 初始化Peer (使用公共服务器)
-            if (peer) {
-                peer.destroy();
-            }
-            
-            // 创建新的Peer连接
-            peer = new Peer();
-            
-            peer.on('open', (id) => {
-                myPeerId = id;
-                peerIdDisplay.innerHTML = `<i class="fas fa-id-card"></i> ID: ${id}`;
-                console.log('Peer ID:', id);
-            });
-
-            peer.on('connection', (incomingConn) => {
-                console.log('收到连接请求');
-                setupConnection(incomingConn, incomingConn.peer);
-            });
-
-            peer.on('error', (err) => {
-                console.error('Peer错误:', err);
-                alert('连接服务器失败，请刷新页面重试');
-            });
-            
-            alert('解锁成功！今日暗号已显示');
-        } else {
-            alert('主密码错误');
-        }
-    });
-
-    // 加密解密
+    // ---------- 加密解密 (直接使用50位密码) ----------
     function encrypt(plain) {
-        if (!isUnlocked || !currentDailyKey) return plain;
+        if (!plain) return plain;
         try {
             const textBytes = new TextEncoder().encode(plain);
-            const keyBytes = new TextEncoder().encode(currentDailyKey);
+            const keyBytes = new TextEncoder().encode(SECRET_KEY);
             const cipher = new Uint8Array(textBytes.length);
-            for (let i=0; i<textBytes.length; i++) {
+            for (let i = 0; i < textBytes.length; i++) {
                 cipher[i] = textBytes[i] ^ keyBytes[i % keyBytes.length];
             }
             return '🔐' + btoa(String.fromCharCode(...cipher));
-        } catch { return plain; }
+        } catch (e) {
+            console.error('加密失败:', e);
+            return plain;
+        }
     }
 
     function decrypt(encoded) {
         if (!encoded || !encoded.startsWith('🔐')) return encoded;
-        if (!isUnlocked || !currentDailyKey) return '[需解锁]';
         try {
             const base64 = encoded.slice(1);
             const binary = atob(base64);
             const cipherBytes = new Uint8Array(binary.length);
-            for (let i=0; i<binary.length; i++) {
+            for (let i = 0; i < binary.length; i++) {
                 cipherBytes[i] = binary.charCodeAt(i);
             }
-            const keyBytes = new TextEncoder().encode(currentDailyKey);
+            const keyBytes = new TextEncoder().encode(SECRET_KEY);
             const plainBytes = new Uint8Array(cipherBytes.length);
-            for (let i=0; i<cipherBytes.length; i++) {
+            for (let i = 0; i < cipherBytes.length; i++) {
                 plainBytes[i] = cipherBytes[i] ^ keyBytes[i % keyBytes.length];
             }
             return new TextDecoder().decode(plainBytes);
-        } catch { return '[解密失败]'; }
+        } catch (e) {
+            console.error('解密失败:', e);
+            return '[解密失败]';
+        }
     }
 
-    function fileToBase64(file, cb) {
+    // 文件转Base64
+    function fileToBase64(file, callback) {
         const reader = new FileReader();
-        reader.onload = () => cb(reader.result.split(',')[1]);
+        reader.onload = () => callback(reader.result.split(',')[1]);
         reader.readAsDataURL(file);
     }
 
-    function updateMembersList() {
-        membersList.innerHTML = '';
-        const selfDiv = document.createElement('div');
-        selfDiv.className = 'member-item self';
-        selfDiv.innerHTML = `<span class="member-status"></span><span class="member-name"><i class="fas fa-crown" style="color:gold;"></i> ${myName} (你)</span>`;
-        membersList.appendChild(selfDiv);
-
-        connections.forEach(c => {
-            const div = document.createElement('div');
-            div.className = 'member-item';
-            div.setAttribute('data-name', c.memberName || '成员');
-            div.innerHTML = `<span class="member-status"></span><span class="member-name">${c.memberName || '成员'}</span>`;
-            div.addEventListener('click', () => {
-                textInput.value += `@${c.memberName} `;
-                textInput.focus();
-            });
-            membersList.appendChild(div);
-        });
-        memberCountSpan.innerText = 1 + connections.length;
-    }
-
-    function broadcastToAll(encryptedData, excludeConn = null) {
-        connections.forEach(c => {
-            if (c.conn && c.conn.open && c.conn !== excludeConn) {
-                c.conn.send(encryptedData);
-            }
-        });
-    }
-
-    function addMessageToUI(content, senderName, senderStyle = 1) {
+    // 添加文字消息到界面
+    function addMessageToUI(content, senderName) {
         const msgDiv = document.createElement('div');
         msgDiv.classList.add('message', senderName === myName ? 'self' : 'other');
         
         const bubble = document.createElement('div');
-        bubble.classList.add('bubble', `bubble-style-${senderStyle}`);
-        
-        let htmlContent = content.replace(/@(\w+)/g, '<span class="at-link">@$1</span>');
-        bubble.innerHTML = htmlContent;
-        
-        if (senderName !== myName && content.includes('@' + myName)) {
-            bubble.classList.add('mention-highlight');
-            if (navigator.vibrate) navigator.vibrate(30);
-        }
+        bubble.classList.add('bubble');
+        bubble.textContent = content;
         
         const sig = document.createElement('div');
         sig.classList.add('signature');
-        const time = new Date().toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' });
-        sig.innerHTML = `<span><i class="far fa-user"></i> ${senderName}</span> <span><i class="far fa-clock"></i> ${time}</span>`;
+        const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        sig.innerHTML = `<span>${senderName}</span> <span>${time}</span>`;
         
         msgDiv.appendChild(bubble);
         msgDiv.appendChild(sig);
@@ -903,12 +371,13 @@
         messageArea.scrollTop = messageArea.scrollHeight;
     }
 
+    // 显示媒体消息
     function displayMedia(base64, type, senderName) {
         const msgDiv = document.createElement('div');
         msgDiv.classList.add('message', senderName === myName ? 'self' : 'other');
         
         const bubble = document.createElement('div');
-        bubble.classList.add('bubble', `bubble-style-${myBubbleStyle}`);
+        bubble.classList.add('bubble');
         
         if (type === 'image') {
             const img = document.createElement('img');
@@ -925,8 +394,8 @@
         
         const sig = document.createElement('div');
         sig.classList.add('signature');
-        const time = new Date().toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' });
-        sig.innerHTML = `<span><i class="far fa-user"></i> ${senderName}</span> <span><i class="far fa-clock"></i> ${time}</span>`;
+        const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        sig.innerHTML = `<span>${senderName}</span> <span>${time}</span>`;
         
         msgDiv.appendChild(bubble);
         msgDiv.appendChild(sig);
@@ -934,70 +403,100 @@
         messageArea.scrollTop = messageArea.scrollHeight;
     }
 
+    // 广播给所有连接
+    function broadcastToAll(encryptedData, excludeConn = null) {
+        connections.forEach(c => {
+            if (c.conn && c.conn.open && c.conn !== excludeConn) {
+                c.conn.send(encryptedData);
+            }
+        });
+    }
+
+    // 处理接收到的数据
     function handleIncomingData(encryptedData, senderConn) {
         const decrypted = decrypt(encryptedData);
         const senderEntry = connections.find(c => c.conn === senderConn);
-        if (!senderEntry) {
-            console.log('未知发送者');
-            return;
-        }
-
-        console.log('收到消息:', decrypted);
+        const senderName = senderEntry ? senderEntry.memberName : '对方';
 
         if (decrypted.startsWith('NICKNAME:')) {
-            senderEntry.memberName = decrypted.replace('NICKNAME:', '');
-            updateMembersList();
-            addMessageToUI(`👤 ${senderEntry.memberName} 修改了昵称`, '系统', 1);
-        } else if (decrypted.startsWith('STYLE:')) {
-            senderEntry.bubbleStyle = parseInt(decrypted.replace('STYLE:', '')) || 1;
+            // 更新昵称
+            if (senderEntry) {
+                senderEntry.memberName = decrypted.replace('NICKNAME:', '');
+                // 更新成员列表显示
+                updateMembersList();
+            }
         } else if (decrypted.startsWith('IMAGE_BASE64:')) {
-            displayMedia(decrypted.replace('IMAGE_BASE64:', ''), 'image', senderEntry.memberName);
+            displayMedia(decrypted.replace('IMAGE_BASE64:', ''), 'image', senderName);
         } else if (decrypted.startsWith('VIDEO_BASE64:')) {
-            displayMedia(decrypted.replace('VIDEO_BASE64:', ''), 'video', senderEntry.memberName);
+            displayMedia(decrypted.replace('VIDEO_BASE64:', ''), 'video', senderName);
         } else {
-            addMessageToUI(decrypted, senderEntry.memberName, senderEntry.bubbleStyle || 1);
+            addMessageToUI(decrypted, senderName);
         }
     }
 
+    // 更新成员列表显示
+    function updateMembersList() {
+        // 这个版本简化，不实现左侧成员列表，只显示连接数
+        connectionStatus.innerHTML = `<i class="fas fa-wifi"></i> 在线: ${connections.length}`;
+    }
+
+    // 设置新连接
     function setupConnection(conn, peerId) {
-        if (connections.some(c => c.peerId === peerId)) {
-            console.log('连接已存在');
-            return;
-        }
+        if (connections.some(c => c.peerId === peerId)) return;
         
-        const memberName = `成员${connections.length+1}`;
-        connections.push({ conn, peerId, memberName, bubbleStyle: 1 });
-        
-        console.log('新连接建立:', peerId);
+        const memberName = `成员${connections.length + 1}`;
+        connections.push({ conn, peerId, memberName });
 
         conn.on('data', (data) => handleIncomingData(data, conn));
         
         conn.on('open', () => {
-            console.log('连接打开');
-            // 发送自己的信息
+            // 发送自己的昵称
             conn.send(encrypt('NICKNAME:' + myName));
-            conn.send(encrypt('STYLE:' + myBubbleStyle));
         });
         
         conn.on('close', () => {
-            console.log('连接关闭');
             connections = connections.filter(c => c.conn !== conn);
             updateMembersList();
-            connectionStatus.innerHTML = `<i class="fas fa-wifi"></i> 在线: ${connections.length}`;
-            addMessageToUI(`👋 一位成员离开了`, '系统', 1);
-        });
-
-        conn.on('error', (err) => {
-            console.error('连接错误:', err);
+            addMessageToUI('👋 一位成员离开了', '系统');
         });
 
         updateMembersList();
-        connectionStatus.innerHTML = `<i class="fas fa-wifi"></i> 在线: ${connections.length}`;
-        addMessageToUI(`✨ 新成员加入: ${memberName}`, '系统', 1);
+        addMessageToUI(`✨ 新成员加入: ${memberName}`, '系统');
     }
 
+    // 初始化Peer
+    function initPeer() {
+        if (peer) peer.destroy();
+        peer = new Peer();
+        
+        peer.on('open', (id) => {
+            myPeerId = id;
+            peerIdDisplay.innerHTML = `<i class="fas fa-id-card"></i> ID: ${id}`;
+        });
+
+        peer.on('connection', (incomingConn) => {
+            setupConnection(incomingConn, incomingConn.peer);
+        });
+
+        peer.on('error', (err) => {
+            console.error('Peer错误:', err);
+            alert('连接服务器失败，请刷新重试');
+        });
+    }
+
+    // 启动Peer
+    initPeer();
+
+    // 复制ID
+    copyIdBtn.addEventListener('click', () => {
+        if (myPeerId) {
+            navigator.clipboard.writeText(myPeerId);
+            alert('ID已复制');
+        }
+    });
+
+    // 连接对方
     connectBtn.addEventListener('click', () => {
-        if (!isUnlocked) return;
         const remoteId = remoteIdInput.value.trim();
         if (!remoteId) {
             alert('请输入对方ID');
@@ -1012,52 +511,29 @@
             return;
         }
         
-        console.log('尝试连接:', remoteId);
         const newConn = peer.connect(remoteId);
-        
         if (newConn) {
             newConn.on('open', () => {
-                console.log('连接成功');
                 setupConnection(newConn, remoteId);
             });
-            
-            newConn.on('error', (err) => {
-                console.error('连接错误:', err);
-                alert('连接失败，请检查ID是否正确');
+            newConn.on('error', () => {
+                alert('连接失败，请检查ID');
             });
         } else {
-            alert('连接失败，请检查ID');
+            alert('连接失败');
         }
-        
         remoteIdInput.value = '';
     });
 
+    // 断开所有连接
     disconnectBtn.addEventListener('click', () => {
-        if (!isUnlocked) return;
         connections.forEach(c => c.conn.close());
         connections = [];
         updateMembersList();
-        connectionStatus.innerHTML = '<i class="fas fa-satellite-dish"></i> 等待连接';
-        addMessageToUI('📴 已断开所有连接', '系统', 1);
+        addMessageToUI('📴 已断开所有连接', '系统');
     });
 
-    copyIdBtn.addEventListener('click', () => {
-        if (!isUnlocked) return;
-        navigator.clipboard.writeText(myPeerId);
-        alert('ID已复制到剪贴板');
-    });
-
-    changeNicknameBtn.addEventListener('click', () => {
-        if (!isUnlocked) return;
-        const newName = nicknameInput.value.trim();
-        if (newName) {
-            myName = newName;
-            updateMembersList();
-            broadcastToAll(encrypt('NICKNAME:' + myName));
-            addMessageToUI(`📝 你修改了昵称为: ${myName}`, '系统', 1);
-        }
-    });
-
+    // 发送文字消息
     sendBtn.addEventListener('click', sendText);
     textInput.addEventListener('keydown', (e) => {
         if (e.key === 'Enter' && !e.shiftKey) {
@@ -1067,36 +543,33 @@
     });
 
     function sendText() {
-        if (!isUnlocked) return;
         const raw = textInput.value.trim();
         if (!raw) return;
+        
         if (connections.length > 0) {
             broadcastToAll(encrypt(raw));
         } else {
-            addMessageToUI('⚠️ 当前没有其他成员在线', '系统', 1);
+            addMessageToUI('⚠️ 当前没有其他成员在线', '系统');
         }
-        addMessageToUI(raw, myName, myBubbleStyle);
+        addMessageToUI(raw, myName);
         textInput.value = '';
         textInput.style.height = 'auto';
     }
 
+    // 表情插入
     document.querySelectorAll('.emoji').forEach(el => {
         el.addEventListener('click', () => {
-            if (!isUnlocked) return;
             textInput.value += el.getAttribute('data-emoji');
             textInput.focus();
         });
     });
 
-    attachBtn.addEventListener('click', () => {
-        if (!isUnlocked) return;
-        fileInput.click();
-    });
-    
+    // 文件上传
+    attachBtn.addEventListener('click', () => fileInput.click());
     fileInput.addEventListener('change', function(e) {
-        if (!isUnlocked) return;
         const file = e.target.files[0];
         if (!file) return;
+        
         const isImage = file.type.startsWith('image/');
         const isVideo = file.type.startsWith('video/');
         if (!isImage && !isVideo) {
@@ -1107,6 +580,7 @@
         fileToBase64(file, (base64) => {
             const prefix = isImage ? 'IMAGE_BASE64:' : 'VIDEO_BASE64:';
             const data = prefix + base64;
+            
             if (connections.length > 0) {
                 broadcastToAll(encrypt(data));
             }
@@ -1115,21 +589,21 @@
         fileInput.value = '';
     });
 
+    // 清空聊天记录
     clearHistoryBtn.addEventListener('click', () => {
-        if (!isUnlocked) return;
         messageArea.innerHTML = '';
-        addMessageToUI('💫 对话已清空', '系统', 1);
+        addMessageToUI('💫 对话已清空', '系统');
     });
 
+    // 输入框自适应
     textInput.addEventListener('input', function() {
         this.style.height = 'auto';
         this.style.height = this.scrollHeight + 'px';
     });
 
-    // 初始化
-    updateMembersList();
-    addMessageToUI('✨ 请输入50位主密码解锁今日暗号', '系统', 1);
-    connectionStatus.innerHTML = '<i class="fas fa-lock"></i> 未解锁';
+    // 初始消息
+    addMessageToUI('🔐 50位固定密码加密已启用', '系统');
+    addMessageToUI('📌 复制自己的ID发给对方，然后粘贴对方ID点击"连接"', '系统');
 })();
 </script>
 </body>
