@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>✨ 星链 · 每日暗号 · 修复版</title>
+    <title>✨ 星链 </title>
     <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
@@ -582,8 +582,8 @@
 <div class="app">
     <div class="header">
         <div class="title-section">
-            <h1><i class="fas fa-star" style="color: #ffd966;"></i> 星链·每日暗号</h1>
-            <div class="badge"><i class="fas fa-shield-alt"></i> 主密码不显示</div>
+            <h1><i class="fas fa-star" style="color: #ffd966;"></i> 星链·真正跨设备</h1>
+            <div class="badge"><i class="fas fa-shield-alt"></i> 点对点直连</div>
         </div>
         <div class="key-tag" id="globalKeyDisplay">
             <i class="fas fa-lock"></i> 请输入主密码解锁
@@ -638,8 +638,8 @@
                 <div class="peer-id-box" id="peerIdDisplay"><i class="fas fa-id-card"></i> 生成ID中...</div>
                 <button id="copyIdBtn" disabled><i class="far fa-copy"></i> 复制ID</button>
                 <input type="text" class="remote-input" id="remoteIdInput" placeholder="粘贴好友ID" disabled>
-                <button id="connectBtn" disabled><i class="fas fa-plus-circle"></i> 邀请</button>
-                <button id="disconnectBtn" style="background:#6b4f8f;" disabled><i class="fas fa-sign-out-alt"></i> 离开</button>
+                <button id="connectBtn" disabled><i class="fas fa-plus-circle"></i> 连接</button>
+                <button id="disconnectBtn" style="background:#6b4f8f;" disabled><i class="fas fa-sign-out-alt"></i> 断开</button>
             </div>
 
             <div class="toolbar">
@@ -676,7 +676,7 @@
     </div>
 </div>
 
-<!-- PeerJS -->
+<!-- PeerJS 使用公共服务器 -->
 <script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.2/dist/peerjs.min.js"></script>
 <script>
 (function() {
@@ -688,7 +688,7 @@
     let currentDailyKey = '';
     let myName = "我";
     let myPeerId = null;
-    let connections = [];
+    let connections = []; // 存储所有连接 { conn, peerId, memberName, bubbleStyle }
     let myBubbleStyle = 1;
     let peer = null;
 
@@ -779,19 +779,28 @@
             clearHistoryBtn.style.opacity = '1';
             connectionStatus.innerHTML = '<i class="fas fa-satellite-dish"></i> 等待连接';
             
-            // 初始化Peer
+            // 初始化Peer (使用公共服务器)
             if (peer) {
                 peer.destroy();
             }
+            
+            // 创建新的Peer连接
             peer = new Peer();
             
             peer.on('open', (id) => {
                 myPeerId = id;
                 peerIdDisplay.innerHTML = `<i class="fas fa-id-card"></i> ID: ${id}`;
+                console.log('Peer ID:', id);
             });
 
             peer.on('connection', (incomingConn) => {
+                console.log('收到连接请求');
                 setupConnection(incomingConn, incomingConn.peer);
+            });
+
+            peer.on('error', (err) => {
+                console.error('Peer错误:', err);
+                alert('连接服务器失败，请刷新页面重试');
             });
             
             alert('解锁成功！今日暗号已显示');
@@ -928,11 +937,17 @@
     function handleIncomingData(encryptedData, senderConn) {
         const decrypted = decrypt(encryptedData);
         const senderEntry = connections.find(c => c.conn === senderConn);
-        if (!senderEntry) return;
+        if (!senderEntry) {
+            console.log('未知发送者');
+            return;
+        }
+
+        console.log('收到消息:', decrypted);
 
         if (decrypted.startsWith('NICKNAME:')) {
             senderEntry.memberName = decrypted.replace('NICKNAME:', '');
             updateMembersList();
+            addMessageToUI(`👤 ${senderEntry.memberName} 修改了昵称`, '系统', 1);
         } else if (decrypted.startsWith('STYLE:')) {
             senderEntry.bubbleStyle = parseInt(decrypted.replace('STYLE:', '')) || 1;
         } else if (decrypted.startsWith('IMAGE_BASE64:')) {
@@ -945,19 +960,36 @@
     }
 
     function setupConnection(conn, peerId) {
-        if (connections.some(c => c.peerId === peerId)) return;
+        if (connections.some(c => c.peerId === peerId)) {
+            console.log('连接已存在');
+            return;
+        }
+        
         const memberName = `成员${connections.length+1}`;
         connections.push({ conn, peerId, memberName, bubbleStyle: 1 });
+        
+        console.log('新连接建立:', peerId);
 
         conn.on('data', (data) => handleIncomingData(data, conn));
+        
+        conn.on('open', () => {
+            console.log('连接打开');
+            // 发送自己的信息
+            conn.send(encrypt('NICKNAME:' + myName));
+            conn.send(encrypt('STYLE:' + myBubbleStyle));
+        });
+        
         conn.on('close', () => {
+            console.log('连接关闭');
             connections = connections.filter(c => c.conn !== conn);
             updateMembersList();
             connectionStatus.innerHTML = `<i class="fas fa-wifi"></i> 在线: ${connections.length}`;
+            addMessageToUI(`👋 一位成员离开了`, '系统', 1);
         });
 
-        conn.send(encrypt('NICKNAME:' + myName));
-        conn.send(encrypt('STYLE:' + myBubbleStyle));
+        conn.on('error', (err) => {
+            console.error('连接错误:', err);
+        });
 
         updateMembersList();
         connectionStatus.innerHTML = `<i class="fas fa-wifi"></i> 在线: ${connections.length}`;
@@ -967,12 +999,36 @@
     connectBtn.addEventListener('click', () => {
         if (!isUnlocked) return;
         const remoteId = remoteIdInput.value.trim();
-        if (!remoteId || remoteId === myPeerId) return;
-        if (connections.some(c => c.peerId === remoteId)) return;
-        const newConn = peer.connect(remoteId);
-        if (newConn) {
-            newConn.on('open', () => setupConnection(newConn, remoteId));
+        if (!remoteId) {
+            alert('请输入对方ID');
+            return;
         }
+        if (remoteId === myPeerId) {
+            alert('不能连接自己');
+            return;
+        }
+        if (connections.some(c => c.peerId === remoteId)) {
+            alert('已经连接过了');
+            return;
+        }
+        
+        console.log('尝试连接:', remoteId);
+        const newConn = peer.connect(remoteId);
+        
+        if (newConn) {
+            newConn.on('open', () => {
+                console.log('连接成功');
+                setupConnection(newConn, remoteId);
+            });
+            
+            newConn.on('error', (err) => {
+                console.error('连接错误:', err);
+                alert('连接失败，请检查ID是否正确');
+            });
+        } else {
+            alert('连接失败，请检查ID');
+        }
+        
         remoteIdInput.value = '';
     });
 
@@ -982,12 +1038,13 @@
         connections = [];
         updateMembersList();
         connectionStatus.innerHTML = '<i class="fas fa-satellite-dish"></i> 等待连接';
+        addMessageToUI('📴 已断开所有连接', '系统', 1);
     });
 
     copyIdBtn.addEventListener('click', () => {
         if (!isUnlocked) return;
         navigator.clipboard.writeText(myPeerId);
-        alert('ID已复制');
+        alert('ID已复制到剪贴板');
     });
 
     changeNicknameBtn.addEventListener('click', () => {
@@ -997,6 +1054,7 @@
             myName = newName;
             updateMembersList();
             broadcastToAll(encrypt('NICKNAME:' + myName));
+            addMessageToUI(`📝 你修改了昵称为: ${myName}`, '系统', 1);
         }
     });
 
@@ -1014,6 +1072,8 @@
         if (!raw) return;
         if (connections.length > 0) {
             broadcastToAll(encrypt(raw));
+        } else {
+            addMessageToUI('⚠️ 当前没有其他成员在线', '系统', 1);
         }
         addMessageToUI(raw, myName, myBubbleStyle);
         textInput.value = '';
@@ -1039,12 +1099,17 @@
         if (!file) return;
         const isImage = file.type.startsWith('image/');
         const isVideo = file.type.startsWith('video/');
-        if (!isImage && !isVideo) return;
+        if (!isImage && !isVideo) {
+            alert('只支持图片或视频');
+            return;
+        }
 
         fileToBase64(file, (base64) => {
             const prefix = isImage ? 'IMAGE_BASE64:' : 'VIDEO_BASE64:';
             const data = prefix + base64;
-            broadcastToAll(encrypt(data));
+            if (connections.length > 0) {
+                broadcastToAll(encrypt(data));
+            }
             displayMedia(base64, isImage ? 'image' : 'video', myName);
         });
         fileInput.value = '';
